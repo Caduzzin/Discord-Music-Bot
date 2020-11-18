@@ -12,12 +12,18 @@ client = commands.Bot(command_prefix='?',
 
 
 @client.event
+
+# function to warn that the bot is on
+
 async def on_ready():
     print('BOT ONLINE - OLÁ MUNDO!')
     await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="uma música..."))
 
 
 @client.command(pass_context=True)
+
+# function for the bot to enter the voice channel you are
+
 async def entrar(ctx):
     try:
         canal = ctx.author.voice.channel
@@ -28,6 +34,9 @@ async def entrar(ctx):
 
 
 @client.command(pass_context=True)
+
+# function for the bot to leave the voice channel
+
 async def sair(ctx):
     server = ctx.message.guild.voice_client
     await server.disconnect()
@@ -44,21 +53,26 @@ class Music(commands.Cog):
         })
         self.queue = None
 
+    # function to search for music on youtube
+
     def search_youtube(self, query):
         html = urllib.request.urlopen(
             "https://www.youtube.com/results?search_query=" + query)
         video_ids = re.findall(r"watch\?v=(\S{11})", html.read().decode())
         return "https://www.youtube.com/watch?v=" + video_ids[0]
 
+    # function to start music
     @client.command(name='play', help='play music')
     async def play(self, song):
+
+        # download music in you computer
+
         ydl = youtube_dl.YoutubeDL({
             'format': 'bestaudio/best',
             'quiet': 'true',
             'outtmpl': 'OneDrive/%(extractor)s-%(id)s-%(title)s.%(ext)s',
         })
-        print(self)
-        print(song)
+
         loop = asyncio.get_event_loop()
         voice_channel = ""
         try:
@@ -88,6 +102,8 @@ class Music(commands.Cog):
             executable=r"C:\\Users\\Usuario\\Documents\\Projects\\src\\ffmpeg.exe", source=filename))
 
     @client.command(name='stop', help='stop music', )
+
+    # function to stop music
     async def stop(ctx):
         voice = ctx.channel.guild.voice_client
         voice.stop()
